@@ -82,7 +82,7 @@ The business wants to:
 ---
 
 ## 📈 Dashboard Preview
-![Power BI Dashboard](images/dashboard_preview.png)
+<img width="1316" height="731" alt="image" src="https://github.com/user-attachments/assets/87228368-594a-4f20-8da3-660e089093cf" />
 
 ---
 
