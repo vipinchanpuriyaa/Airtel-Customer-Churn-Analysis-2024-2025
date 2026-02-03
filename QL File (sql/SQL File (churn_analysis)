@@ -1,3 +1,66 @@
+-- =====================================================
+-- DATABASE: Airtel Customer Churn Analytics
+-- DATA SIZE: 5M+ Rows (Optimized)
+-- =====================================================
+
+CREATE TABLE churn_customers (
+    customer_id        BIGINT PRIMARY KEY,
+    
+    gender             VARCHAR(10),
+    senior_citizen     BOOLEAN,
+    partner            BOOLEAN,
+    dependents         BOOLEAN,
+
+    tenure_months      INT,
+    contract_type      VARCHAR(20),      -- Month-to-month, One year, Two year
+    internet_service   VARCHAR(20),      -- DSL, Fiber optic, No
+
+    online_security    BOOLEAN,
+    tech_support       BOOLEAN,
+
+    payment_method     VARCHAR(30),
+    paperless_billing  BOOLEAN,
+
+    monthly_charges    DECIMAL(10,2),
+    total_charges      DECIMAL(12,2),
+
+    churn              BOOLEAN,           -- TRUE = Churned
+    churn_date         DATE,
+
+    year               SMALLINT,
+    quarter            VARCHAR(2),
+    month_name         VARCHAR(15),
+
+    created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =====================================================
+-- INDEXES (CRITICAL FOR 5M+ ROW PERFORMANCE)
+-- =====================================================
+
+CREATE INDEX idx_churn_flag ON churn_customers (churn);
+CREATE INDEX idx_contract_type ON churn_customers (contract_type);
+CREATE INDEX idx_internet_service ON churn_customers (internet_service);
+CREATE INDEX idx_tenure ON churn_customers (tenure_months);
+CREATE INDEX idx_year_month ON churn_customers (year, month_name);
+CREATE INDEX idx_payment_method ON churn_customers (payment_method);
+
+-- Composite index for high-usage analytics
+CREATE INDEX idx_churn_contract_service 
+ON churn_customers (churn, contract_type, internet_service);
+
+-- =====================================================
+-- OPTIONAL: PARTITIONING (RECOMMENDED FOR 5M+ ROWS)
+-- =====================================================
+-- Example: Partition by Year (PostgreSQL)
+
+-- CREATE TABLE churn_customers_2024 PARTITION OF churn_customers
+-- FOR VALUES IN (2024);
+
+-- CREAT
+
+
+
 -- Overall churn rate
 SELECT
     Churn,
