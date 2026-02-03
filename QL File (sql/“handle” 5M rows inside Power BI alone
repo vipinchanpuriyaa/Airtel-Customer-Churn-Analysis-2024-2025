@@ -1,0 +1,193 @@
+All good — this is a **very common question** when moving to **5M+ rows** 👍
+I’ll explain **how to handle (manage) 5,000,000+ rows** step-by-step in **simple, practical terms**, exactly how it’s done in real projects.
+
+---
+
+## 🔑 Golden Rule (Very Important)
+
+👉 **You do NOT “handle” 5M rows inside Power BI alone**
+You handle them **before Power BI** using:
+
+* SQL (database)
+* Proper data modeling
+* Optimized DAX
+
+Power BI is the **visual layer**, not the storage engine.
+
+---
+
+# ✅ 1️⃣ Handle 5M+ Rows in DATABASE (SQL Layer)
+
+### ✔ Use ONE fact table
+
+Keep churn data in **one large fact table** (like `churn_customers`).
+
+### ✔ Create indexes (mandatory)
+
+```sql
+CREATE INDEX idx_churn ON churn_customers(churn);
+CREATE INDEX idx_tenure ON churn_customers(tenure_months);
+CREATE INDEX idx_contract ON churn_customers(contract_type);
+```
+
+➡️ This makes filtering **milliseconds fast**.
+
+---
+
+# ✅ 2️⃣ Reduce Data BEFORE Power BI
+
+### ❌ Bad practice
+
+Loading all 5M rows with 30 columns.
+
+### ✅ Best practice
+
+Create a **view or aggregated table**:
+
+```sql
+CREATE VIEW churn_summary AS
+SELECT
+    year,
+    month_name,
+    contract_type,
+    internet_service,
+    COUNT(*) AS total_customers,
+    SUM(CASE WHEN churn = TRUE THEN 1 ELSE 0 END) AS churned_customers,
+    AVG(monthly_charges) AS avg_monthly_charges
+FROM churn_customers
+GROUP BY year, month_name, contract_type, internet_service;
+```
+
+👉 Power BI reads **thousands of rows**, not millions.
+
+---
+
+# ✅ 3️⃣ Use STAR SCHEMA (Critical for Performance)
+
+### ⭐ Fact Table
+
+* Fact_Churn (5M rows)
+
+### ⭐ Dimension Tables (small)
+
+* Dim_Date
+* Dim_Contract
+* Dim_Service
+* Dim_Payment
+
+📌 **Never connect dimensions to dimensions**
+
+---
+
+# ✅ 4️⃣ Power BI Settings (Must Do)
+
+### 🔧 Disable Auto Date/Time
+
+```
+File → Options → Data Load → Auto Date/Time ❌
+```
+
+### 🔧 Use Import Mode (not DirectQuery)
+
+✔ Faster for analytics
+✔ Columnar compression handles millions of rows well
+
+---
+
+# ✅ 5️⃣ DAX RULES for Big Data
+
+### ❌ Don’t do this
+
+```DAX
+Churn Rate = IF(Churn[Churn] = TRUE(), 1, 0)
+```
+
+### ✅ Do this
+
+```DAX
+Churn Rate =
+DIVIDE(
+    CALCULATE(COUNTROWS(Churn), Churn[churn] = TRUE()),
+    COUNTROWS(Churn)
+)
+```
+
+📌 Always use:
+
+* `CALCULATE`
+* `FILTER`
+* Aggregations (`COUNT`, `SUM`, `AVG`)
+
+---
+
+# ✅ 6️⃣ Avoid Calculated Columns
+
+### ❌ Bad
+
+* Calculated columns on tenure, churn flags, month names
+
+### ✅ Good
+
+* Calculate in SQL or Power Query
+* Use **measures only**
+
+---
+
+# ✅ 7️⃣ Partition Large Tables (Advanced)
+
+If using SQL Server / PostgreSQL:
+
+```sql
+PARTITION BY RANGE (year)
+```
+
+Benefits:
+
+* Faster queries
+* Faster refresh
+* Smaller memory footprint
+
+---
+
+# ✅ 8️⃣ Incremental Refresh (Power BI Pro+)
+
+Only refresh **new data**, not all 5M rows.
+
+```text
+2024 data → frozen
+2025 data → refresh daily
+```
+
+---
+
+# ✅ 9️⃣ Visual-Level Optimization
+
+✔ Limit visuals per page (6–8 max)
+✔ Avoid tables with thousands of rows
+✔ Prefer:
+
+* Cards
+* Bar charts
+* Line charts
+
+---
+
+# 🧠 Real-World Architecture (Simple)
+
+```
+CSV / Source Data
+        ↓
+     SQL DB (5M+ rows)
+        ↓
+ Aggregated Views
+        ↓
+ Power BI (Star Schema)
+        ↓
+ Executive Dashboard
+```
+
+---
+
+# 🚀 Summary (Interview-Ready Answer)
+
+> “I handle 5M+ rows by pushing heavy processing to SQL, using indexed fact tables, aggregating data before Power BI, applying a star schema, avoiding calculated columns, and optimizing DAX with measures only.”
