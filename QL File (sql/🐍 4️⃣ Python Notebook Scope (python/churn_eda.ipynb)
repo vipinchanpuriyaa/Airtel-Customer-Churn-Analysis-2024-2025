@@ -1,0 +1,95 @@
+Include:
+
+Data loading
+
+Null checks
+
+Churn distribution
+
+Boxplot: MonthlyCharges vs Churn
+
+Histogram: Tenure vs Churn
+
+Correlation analysis
+
+Libraries:pandas
+numpy
+matplotlib
+seaborn
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load dataset
+df = pd.read_csv("../data/airtel_churn_telecom_dataset.csv")
+
+# Basic overview
+print("Dataset Shape:", df.shape)
+print("\nData Types:\n", df.dtypes)
+print("\nMissing Values:\n", df.isnull().sum())
+
+# Churn distribution
+churn_counts = df["Churn"].value_counts()
+plt.figure()
+plt.bar(churn_counts.index, churn_counts.values)
+plt.title("Churn Distribution")
+plt.xlabel("Churn")
+plt.ylabel("Number of Customers")
+plt.show()
+
+# Tenure vs Churn
+plt.figure()
+df[df["Churn"] == "Yes"]["tenure"].hist(bins=30, alpha=0.7)
+df[df["Churn"] == "No"]["tenure"].hist(bins=30, alpha=0.7)
+plt.legend(["Churned", "Retained"])
+plt.title("Tenure Distribution by Churn")
+plt.xlabel("Tenure (Months)")
+plt.ylabel("Customers")
+plt.show()
+
+# Monthly Charges vs Churn
+plt.figure()
+plt.boxplot(
+    [
+        df[df["Churn"] == "Yes"]["MonthlyCharges"],
+        df[df["Churn"] == "No"]["MonthlyCharges"]
+    ],
+    labels=["Churned", "Retained"]
+)
+plt.title("Monthly Charges by Churn")
+plt.ylabel("Monthly Charges")
+plt.show()
+
+# Contract-wise churn rate
+contract_churn = (
+    df.groupby("Contract")["Churn"]
+    .value_counts(normalize=True)
+    .unstack()
+    .fillna(0)
+)
+
+plt.figure()
+contract_churn["Yes"].plot(kind="bar")
+plt.title("Churn Rate by Contract Type")
+plt.xlabel("Contract Type")
+plt.ylabel("Churn Rate")
+plt.show()
+
+# Correlation with churn (numeric only)
+df["Churn_Flag"] = df["Churn"].map({"Yes": 1, "No": 0})
+
+numeric_cols = ["tenure", "MonthlyCharges", "TotalCharges", "SeniorCitizen"]
+correlation = df[numeric_cols + ["Churn_Flag"]].corr()
+
+print("\nCorrelation with Churn:\n")
+print(correlation["Churn_Flag"].sort_values(ascending=False))
+
+# High-risk customer identification
+high_risk = df[
+    (df["Contract"] == "Month-to-month") &
+    (df["tenure"] < 12) &
+    (df["MonthlyCharges"] > 900)
+]
+
+print("\nHigh-risk customers:", high_risk.shape[0])
