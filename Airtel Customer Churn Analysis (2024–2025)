@@ -1,0 +1,89 @@
+# Airtel Customer Churn Analysis (2024–2025)
+**Tools:** SQL | Python | Power BI
+
+## 📌 Project Overview
+This project simulates a real-world telecom churn analysis scenario for Airtel using
+a synthetic dataset modeled on industry-standard telecom KPIs for the period 2024–2025.
+
+The objective is to identify customer churn drivers, high-risk segments, and provide
+data-driven retention strategies.
+
+---
+
+## 🎯 Business Problem
+Airtel is experiencing increased customer churn across prepaid and postpaid segments.
+The business wants to:
+- Understand churn behavior
+- Identify key churn drivers
+- Segment high-risk customers
+- Improve customer retention strategies
+
+---
+
+## 🗂 Dataset Information
+- Rows: 6,000
+- Type: Synthetic telecom customer data
+- Key features:
+  - Tenure
+  - Contract type
+  - Internet service
+  - Monthly & total charges
+  - Service usage & support features
+  - Churn status
+
+> ⚠️ Note: This dataset is synthetic and created for analytical and portfolio purposes only.
+
+---
+
+## 🛠 Tools & Technologies
+- **SQL** – Data querying, segmentation, churn metrics
+- **Python** – EDA, statistical analysis, data visualization
+- **Power BI** – Interactive dashboards and KPI reporting
+
+---
+
+## 📊 Key Analyses Performed
+### SQL
+- Overall churn rate
+- Contract-wise churn
+- Tenure-based churn
+- High-risk customer identification
+
+### Python
+- Exploratory Data Analysis (EDA)
+- Churn distribution analysis
+- Tenure vs churn analysis
+- Monthly charges impact on churn
+
+### Power BI
+- Churn KPI dashboard
+- Contract & service-based churn analysis
+- High-risk customer segmentation
+- Executive-level summary view
+
+---
+
+## 🔍 Key Insights
+- Month-to-month contracts have the highest churn rate
+- Customers with tenure < 12 months are more likely to churn
+- Higher monthly charges increase churn probability
+- Lack of online security and tech support correlates with higher churn
+
+---
+
+## 💡 Business Recommendations
+- Incentivize long-term contracts for new customers
+- Offer early-tenure retention programs
+- Bundle security and tech support services
+- Introduce targeted offers for high-value churn-risk customers
+
+---
+
+## 📈 Dashboard Preview
+![Power BI Dashboard](images/dashboard_preview.png)
+
+---
+
+## 🚀 Conclusion
+This project demonstrates end-to-end telecom churn analysis using SQL, Python,
+and Power BI, aligned with real-world Airtel business scenarios.
