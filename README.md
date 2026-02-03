@@ -23,7 +23,7 @@ The business wants to:
 ---
 
 ## 🗂 Dataset Information
-- Rows: 6,000
+- Rows: 5M+
 - Type: Synthetic telecom customer data
 - Key features:
   - Tenure
