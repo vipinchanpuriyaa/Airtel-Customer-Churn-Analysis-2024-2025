@@ -1,0 +1,27 @@
+-- Overall churn rate
+SELECT
+    Churn,
+    COUNT(*) * 100.0 / (SELECT COUNT(*) FROM airtel_churn) AS churn_percentage
+FROM airtel_churn
+GROUP BY Churn;
+
+-- Churn by contract type
+SELECT Contract, Churn, COUNT(*) AS customers
+FROM airtel_churn
+GROUP BY Contract, Churn;
+
+-- Tenure-based churn
+SELECT
+    CASE
+        WHEN tenure < 12 THEN '0-12 Months'
+        WHEN tenure BETWEEN 12 AND 24 THEN '12-24 Months'
+        ELSE '24+ Months'
+    END AS tenure_group,
+    COUNT(*) FILTER (WHERE Churn='Yes') AS churned_customers
+FROM airtel_churn
+GROUP BY tenure_group;
+
+-- High-risk customers
+SELECT customerID, tenure, MonthlyCharges
+FROM airtel_churn
+WHERE Churn='Yes' AND tenure < 12 AND MonthlyCharges > 900;
